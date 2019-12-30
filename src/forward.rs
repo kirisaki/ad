@@ -96,7 +96,7 @@ where
 {
     type Output = Dual<R>;
     fn div(self, other: Self) -> Dual<R> {
-        Dual { real: self.real / other.real, grad: self.real / other.grad + self.grad / other.real }
+        Dual { real: self.real / other.real, grad: (self.real / other.grad - self.grad / other.real) / (other.real * other.real) }
     }
 }
 
@@ -104,7 +104,7 @@ impl <R> ops::DivAssign for Dual<R>
 where
     R :Real {
     fn div_assign(&mut self, other: Self) {
-        *self = Self { real: self.real / other.real, grad: self.real / other.grad + self.grad / other.real }
+        *self = Self { real: self.real / other.real, grad: (self.real / other.grad - self.grad / other.real) / (other.real * other.real) }
     }
 }
 
@@ -159,13 +159,13 @@ mod tests {
     use crate::forward::*;
 
     #[test]
-    fn test_grad_0_1() {
+    fn grad_1() {
         let f = |x: Dual<f64>| x*x + x.sin();
         assert!(f(Dual{ real: 0.0, grad: 1.0 }).grad < 1.1);
         assert!(f(Dual{ real: 0.0, grad: 1.0 }).grad > 0.9);
     }
     #[test]
-    fn test_grad_pi_1() {
+    fn grad_2() {
         let f = |x: Dual<f64>| x*x + x.sin();
         assert!(f(Dual{ real: 3.14, grad: 1.0 }).grad < 5.3);
         assert!(f(Dual{ real: 3.14, grad: 1.0 }).grad > 5.2);
