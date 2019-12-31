@@ -14,6 +14,9 @@ impl<R: Real> Dual<R> {
     pub fn grad(self) -> R {
         self.grad
     }
+    pub fn c(c: R) -> Self {
+        Dual { real: c, grad: (c.signum() - c.signum())}
+    }
     pub fn abs(self) -> Self {
         Dual { real: self.real.abs(), grad: self.grad.abs() * self.real.signum() }
     }
@@ -169,5 +172,21 @@ mod tests {
         let f = |x: Dual<f64>| x*x + x.sin();
         assert!(f(Dual{ real: 3.14, grad: 1.0 }).grad < 5.3);
         assert!(f(Dual{ real: 3.14, grad: 1.0 }).grad > 5.2);
+    }
+    #[test]
+    fn grad_with_const() {
+        let f = |x: Dual<f64>| Dual::c(3.0)*x*x + Dual::c(2.0)*x;
+        assert!(f(Dual{ real: 0.0, grad: 1.0 }).grad < 2.1);
+        assert!(f(Dual{ real: 0.0, grad: 1.0 }).grad > 1.9);
+    }
+    #[test]
+    fn grad_multi() {
+        let f = |x: Dual<f64>, y: Dual<f64>| x + Dual::c(2.0)*y;
+        let result =  f(
+            Dual{real:0.0, grad:1.0},
+            Dual{real:1.0, grad:0.0},
+        );
+        assert!(result.grad > 0.9);
+        assert!(result.grad < 1.1);
     }
 }
