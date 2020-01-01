@@ -1,4 +1,4 @@
-name: test-ad
+name: publish-ad
 
 on:
   push:
@@ -15,5 +15,7 @@ jobs:
         run: cargo build --verbose
       - name: Test
         run: cargo test --verbose
+      - name: Login
+        run: cargo login ${CARGO_TOKEN}
       - name: Publish
         run: cargo publish
