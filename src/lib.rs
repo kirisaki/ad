@@ -13,7 +13,6 @@
 //!         real: 2.0,
 //!         grad: 0.0,
 //!     })); // Dual { real: 12.0, grad: 10.0 }
-//!     assert!(false);
 //! }
 //! ```
 
