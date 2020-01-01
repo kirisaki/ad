@@ -3,7 +3,7 @@ name: test-ad
 on:
   push:
     branches:
-      - develop
+      - master
 
 jobs:
   build:
@@ -15,5 +15,5 @@ jobs:
         run: cargo build --verbose
       - name: Test
         run: cargo test --verbose
-      - name: Dry run publishing
-        run: cargo publish --dry-run
+      - name: Publish
+        run: cargo publish
